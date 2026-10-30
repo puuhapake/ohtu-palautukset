@@ -1,5 +1,5 @@
 import unittest
-from statistics_service import StatisticsService
+from statistics_service import StatisticsService, SortBy
 from player import Player
 
 class PlayerReaderStub:
@@ -44,10 +44,18 @@ class TestStatisticsService(unittest.TestCase):
         self.assertEqual(top[0].name, "Gretzky")
 
     def test_num_top_players_ok(self):
-        # under the assumption that top(n) 
-        # correctly intends to return n+1 players
         top = self.stats.top(2)
         
         self.assertEqual(len(top), 3)
 
+    def test_top_zero_ok(self):
+        top = self.stats.top(0)
+        self.assertEqual(str(top[0]), "Gretzky EDM 35 + 89 = 124")
 
+    def test_top_by_goals_ok(self):
+        top = self.stats.top(0, SortBy.GOALS)
+        self.assertEqual(str(top[0]), "Lemieux PIT 45 + 54 = 99")
+
+    def test_top_by_assists_ok(self):
+        top = self.stats.top(0, SortBy.ASSISTS)
+        self.assertEqual(str(top[0]), "Gretzky EDM 35 + 89 = 124")
