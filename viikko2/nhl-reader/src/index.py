@@ -39,11 +39,28 @@ class PlayerStats:
             self.reader.get_players(), nationality
         )
 
-        def points(player):
-            return player.goals + player.assists
-
-        players = sorted(players, key=points, reverse=True)
+        players = sorted(players, key=self._points, reverse=True)
         return players
+
+    def _get_players_by_team(self, players, team):
+        return [player for player in players if player.team == team]
+
+    @staticmethod
+    def _points(player):
+        return player.goals + player.assists
+
+    def top_scorers_by_team(self, team):
+        players = self._get_players_by_team(self.reader.get_players(), team)
+        return sorted(players, key=self._points, reverse=True)
+
+    def top_goal_scorers(self, how_many):
+        """Returns how_many top goal-scoring players by goal count descending"""
+        players = sorted(
+            self.reader.get_players(),
+            key=lambda player: player.goals,
+            reverse=True
+        )
+        return players[:how_many]
 
 
 def create_table(stats):
@@ -74,6 +91,7 @@ def create_table(stats):
     return table
 
 def main():
+    # pylint: disable=too-many-statements
     season = Prompt.ask(
         "Season [magenta][2018-19/2019-20/2020-21/2021-22/2022-23/"
         "2023-24/2024-25/2025-26][/magenta] [teal](2024-25)[/teal]",
@@ -92,23 +110,34 @@ def main():
 
     while True:
         console.print()
-        nationality = Prompt.ask(
-            f"Nationality [magenta][{options}][/magenta]",
+        search_type = Prompt.ask(
+            "Search by [magenta][nationality/team][/magenta] (blank to quit)",
+            choices=["nationality", "team", ""],
             default="",
             console=console
         )
 
-        if not nationality:
+        if not search_type:
             break
 
+        if search_type == "nationality":
+            value = Prompt.ask(
+                f"Nationality [magenta][{options}][/magenta]",
+                console=console
+            )
+            players = stats.top_scorers_by_nationality(value)
+            description = f"players from {value}"
+        else:
+            value = Prompt.ask("Team abbreviation", console=console)
+            players = stats.top_scorers_by_team(value)
+            description = f"players in {value}"
+
         console.print(
-            f"        Season {season} players from {nationality}\n",
+            f"        Season {season} {description}\n",
             style="grey70"
         )
 
-        console.print(
-            create_table(stats.top_scorers_by_nationality(nationality))
-        )
+        console.print(create_table(players))
 
 if __name__=="__main__":
     main()
