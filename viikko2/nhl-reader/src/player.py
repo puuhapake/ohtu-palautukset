@@ -7,6 +7,7 @@ class Player:
         self.goals = dict['goals']
         self.assists = dict['assists']
     
+    # deprecated
     def __str__(self):
         _name = f"{self.name:24}"
         _team = f"{self.team:16}"
