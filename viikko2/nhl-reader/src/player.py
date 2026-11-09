@@ -1,12 +1,13 @@
 class Player:
-    def __init__(self, dict):
-        self.name = dict['name']
-        self.nationality = dict['nationality']
-        self.team = dict['team']
-        self.games = dict['games']
-        self.goals = dict['goals']
-        self.assists = dict['assists']
-    
+    # pylint: disable=too-few-public-methods
+    def __init__(self, player_dict):
+        self.name = player_dict['name']
+        self.nationality = player_dict['nationality']
+        self.team = player_dict['team']
+        self.games = player_dict['games']
+        self.goals = player_dict['goals']
+        self.assists = player_dict['assists']
+
     # deprecated
     def __str__(self):
         _name = f"{self.name:24}"
