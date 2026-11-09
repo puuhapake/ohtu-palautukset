@@ -8,4 +8,8 @@ class Player:
         self.assists = dict['assists']
     
     def __str__(self):
-        return f"{self.name} team {self.team}: {self.goals}+{self.assists} points over {self.games} games"
+        _name = f"{self.name:24}"
+        _team = f"{self.team:16}"
+        _points = f"{self.goals:2} + {self.assists:2} = "
+        _total_points = f"{(self.goals+self.assists):3}"
+        return _name + _team + _points + _total_points
